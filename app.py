@@ -13,7 +13,7 @@ st.write("Aquesta xarxa prediu quantes bicis hi haurà quan arribis a la teva es
 #Carregar el model
 @st.cache_resource
 def carregar_model():
-    with open('model_bicing_arbre.pkl', 'rb') as f:
+    with open('model_bicing_arbre(2).pkl', 'rb') as f:
         return pickle.load(f)
 
 model = carregar_model()
