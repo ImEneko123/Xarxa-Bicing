@@ -85,11 +85,36 @@ def obtenir_clima(latitud, longitud):
 temp_actual, pluja_actual = obtenir_clima(lat, lon)
 estat_pluja = "Plovent" if pluja_actual == 1 else "Sense pluja"
 st.write(f"**Clima actual a la zona:** {temp_actual}°C i {estat_pluja}")
+
+#Saber si esta tancada o oberta
+def obtenir_estat_estacio(id_estacio):
+    url = "https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_status"
+    resposta = requests.get(url)
+    
+    # Comprovem que la petició ha anat bé
+    if resposta.status_code == 200:
+        dades = resposta.json()
+        estacions = dades['data']['stations']
+        
+        # Busquem la nostra estació a la llista
+        for estacio in estacions:
+            if int(estacio['station_id']) == int(id_estacio):
+                estat_text = estacio['status'] # Aquí dirà 'IN_SERVICE' o 'CLOSED'
+                
+                # Ho convertim a números per la nostra IA (1 = Obert, 0 = Tancat)
+                if estat_text == 'IN_SERVICE':
+                    return 1
+                else:
+                    return 0
+                    
+    # Si alguna cosa falla amb l'internet, assumim que està oberta (1) per no trencar l'app
+    return 1
+    
 # --- 4. PREDICCIÓ ---
 # Nota: L'ordre ha de ser EXACTAMENT el mateix que vas usar al X_train de Kaggle
 # Suposem l'ordre: hora_decimal, dia_setmana, lat, lon
-input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon, temp_actual, pluja_actual]], 
-                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa'])
+input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon, temp_actual, pluja_actual, status_actual]], 
+                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa', 'status_actual'])
 
 if st.button("Consultar Disponibilitat Real"):
     prediccio = model.predict(input_dades)[0]
