@@ -23,7 +23,7 @@ minuts_futur = st.text_input("Minuts per arribar:")
 
 @st.cache_data
 def carregar_estacions():
-    return pd.read_csv('estacions.csv')
+    return pd.read_csv('estacions_bicing.csv')
 
 df_estacions = carregar_estacions()
 # Combinem l'id real i el nom del carrer
