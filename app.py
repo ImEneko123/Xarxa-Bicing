@@ -49,7 +49,7 @@ lon = fila_estacio['longitude']
 
 #Logica del temps
 ara = datetime.datetime.now()
-moment_futur = ara + datetime.timedelta(minutes=minuts_futur)
+moment_futur = ara + datetime.timedelta(minutes=int(minuts_futur))
 
 # Convertim a les variables que l'arbre entén
 hora_decimal = moment_futur.hour + (moment_futur.minute / 60.0)
