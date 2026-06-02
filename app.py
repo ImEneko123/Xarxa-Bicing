@@ -115,7 +115,7 @@ status_actual = obtenir_estat_estacio(id_seleccionat)
 # Nota: L'ordre ha de ser EXACTAMENT el mateix que vas usar al X_train de Kaggle
 # Suposem l'ordre: hora_decimal, dia_setmana, lat, lon
 input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon, temp_actual, pluja_actual, status_actual]], 
-                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa', 'status'])
+                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa', 'status_num'])
 
 if st.button("Consultar Disponibilitat Real"):
     prediccio = model.predict(input_dades)[0]
