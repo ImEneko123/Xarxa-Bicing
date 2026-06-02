@@ -18,9 +18,6 @@ def carregar_model():
 
 model = carregar_model()
 
-#Subtitol
-st.subheader("Selecció d'Estació")
-
 # Graella per als minuts d'antelació
 minuts_futur = st.text_input("Minuts per arribar:")
 
@@ -30,6 +27,7 @@ def carregar_estacions():
 
 df_estacions = carregar_estacions()
 # Combinem l'id real i el nom del carrer
+st.subheader("Selecció d'Estació")
 df_estacions['opcio_visual'] = "Estació " + df_estacions['id'].astype(str) + " - " + df_estacions['streetName']
 
 llista_opcions = sorted(df_estacions['opcio_visual'].unique())
