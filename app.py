@@ -2,6 +2,7 @@ import streamlit as st
 import pickle
 import pandas as pd
 import datetime
+import requests
 
 #Text a la pagina + Titol
 st.set_page_config(page_title="Bicing Predictor BCN", page_icon="👍")
@@ -50,21 +51,43 @@ dia_setmana = moment_futur.weekday() # 0=Dilluns
 
 st.info(f"Predicció per a: **{moment_futur.strftime('%H:%M')}** ({moment_futur.strftime('%A')})")
 
+def obtenir_clima(latitud, longitud):
+    # Demanem a l'API la temperatura i la pluja actuals
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={latitud}&longitude={longitud}&current=temperature_2m,rain"
+    
+    try:
+        resposta = requests.get(url)
+        dades_clima = resposta.json()
+        
+        temp = dades_clima['current']['temperature_2m']
+        pluja_mm = dades_clima['current']['rain']
+        
+        # Si cauen més de 0mm, considerem que plou (1), si no (0)
+        pluja_activa = 1 if pluja_mm > 0 else 0
+        
+        return temp, pluja_activa
+    except:
+        # Pla B: Si l'API cau o no hi ha internet, posem un valor estàndard per no trencar la web
+        return 18.0, 0
+temp_actual, pluja_actual = obtenir_clima(lat, lon)
+estat_pluja = "Plovent" if pluja_actual == 1 else "Sense pluja"
+st.write(f"**Clima actual a la zona:** {temp_actual}°C i {estat_pluja}")
 # --- 4. PREDICCIÓ ---
 # Nota: L'ordre ha de ser EXACTAMENT el mateix que vas usar al X_train de Kaggle
 # Suposem l'ordre: hora_decimal, dia_setmana, lat, lon
-input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon]], 
-                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude'])
+input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon, temp_actual, pluja_actual]], 
+                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa'])
 
-if st.button("Consultar disponibilitat"):
+if st.button("Consultar Disponibilitat Real"):
     prediccio = model.predict(input_dades)[0]
     
-    # Resultat visual
-    st.metric(label="Bicicletes estimades", value=f"{round(prediccio, 1)} 🚲")
+    st.metric(label="Bicicletes disponibles estimades", value=f"{round(prediccio, 1)})
     
     if prediccio < 1:
-        st.error("⚠️ Sembla que l'estació estarà buida!")
+        st.error("L'estació probablement no en tindra cap")
     elif prediccio < 3:
-        st.warning("🧐 Quedaran poques bicis, afanya't!")
+        st.warning("Quedaran molt poques bicis")
+    elif prediccio < 6:
+        st.success("Hi haurà bicis suficients")
     else:
-        st.success("✅ Hi haurà bicis de sobra!")
+        st.success("Hi haurà moltes bicis")
