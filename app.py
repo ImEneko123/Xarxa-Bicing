@@ -50,8 +50,8 @@ fila_estacio = df_estacions[df_estacions['opcio_visual'] == estacio_seleccionada
 lat = fila_estacio['latitude']
 lon = fila_estacio['longitude']
 
-#Logica del temps
-ara = datetime.datetime.now()
+#Temps Actual
+ara = pd.Timestamp.now(tz='Europe/Madrid')
 # Comprovem si la capsa està buida. Si ho està, posem un 0 per defecte
 if not minuts_futur:
     minuts_futur = 0
