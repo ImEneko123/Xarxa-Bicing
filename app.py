@@ -8,6 +8,7 @@ import requests
 st.set_page_config(page_title="Bicing Predictor BCN", page_icon="👍")
 
 st.title("Predicció de Bicing Barcelona")
+st.sidebar.header("Configurar els parametres")
 st.write("Aquesta xarxa prediu quantes bicis hi haurà quan arribis a la teva estació.")
 
 #Carregar el model
@@ -18,10 +19,7 @@ def carregar_model():
 
 model = carregar_model()
 
-#Elements interactius
-st.sidebar.header("Configurar els parametres")
-
-# Slider per als minuts d'antelació
+# Graella per als minuts d'antelació
 minuts_futur = st.text_input("Minuts per arribar:")
 
 st.subheader("Selecció d'Estació")
@@ -36,13 +34,20 @@ df_estacions['opcio_visual'] = "Estació " + df_estacions['id'].astype(str) + " 
 
 llista_opcions = sorted(df_estacions['opcio_visual'].unique())
 
+# El desplegable ara té index=None perquè surti BUIT per defecte
 estacio_seleccionada = st.selectbox(
     "Busca per carrer o número d'estació:",
     llista_opcions,
-    index=0,
+    index=None,
     placeholder="Escriu per buscar...",
 )
 
+# ATENCIÓ: Si no ha triat res encara, mostrem un avís i ATUREM l'execució de la web
+if not estacio_seleccionada:
+    st.info("Busca i selecciona una estació de Bicing per començar.")
+    st.stop()
+
+# Si ja ha triat una estació, el codi continua i busquem les coordenades
 fila_estacio = df_estacions[df_estacions['opcio_visual'] == estacio_seleccionada].iloc[0]
 lat = fila_estacio['latitude']
 lon = fila_estacio['longitude']
