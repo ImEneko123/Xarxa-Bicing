@@ -52,8 +52,12 @@ lon = fila_estacio['longitude']
 
 #Logica del temps
 ara = datetime.datetime.now()
-moment_futur = ara + datetime.timedelta(minutes=int(minuts_futur))
+# Comprovem si la capsa està buida. Si ho està, posem un 0 per defecte
+if not minuts_futur:
+    minuts_futur = 0
 
+# Ara ja podem fer la suma tranquil·lament perquè segur que hi ha un número
+moment_futur = ara + datetime.timedelta(minutes=int(minuts_futur))
 # Convertim a les variables que l'arbre entén
 hora_decimal = moment_futur.hour + (moment_futur.minute / 60.0)
 dia_setmana = moment_futur.weekday() # 0=Dilluns
