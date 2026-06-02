@@ -25,7 +25,13 @@ st.sidebar.header("Configurar els parametres")
 minuts_futur = st.text_input("Minuts per arribar:")
 
 st.subheader("Selecció d'Estació")
+@st.cache_data
+def carregar_estacions():
+    return pd.read_csv('estacions.csv')
+
+df_estacions = carregar_estacions()
 # Combinem l'id real i el nom del carrer
+st.subheader("Selecció d'Estació")
 df_estacions['opcio_visual'] = "Estació " + df_estacions['id'].astype(str) + " - " + df_estacions['name']
 
 llista_opcions = sorted(df_estacions['opcio_visual'].unique())
