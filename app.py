@@ -109,7 +109,8 @@ def obtenir_estat_estacio(id_estacio):
                     
     # Si alguna cosa falla amb l'internet, assumim que està oberta (1) per no trencar l'app
     return 1
-    
+id_seleccionat = df_estacions[df_estacions['opcio_visual'] == estacio_seleccionada]['id'].values[0]
+status_actual = obtenir_estat_estacio(id_seleccionat)
 # --- 4. PREDICCIÓ ---
 # Nota: L'ordre ha de ser EXACTAMENT el mateix que vas usar al X_train de Kaggle
 # Suposem l'ordre: hora_decimal, dia_setmana, lat, lon
