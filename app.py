@@ -8,7 +8,6 @@ import requests
 st.set_page_config(page_title="Bicing Predictor BCN", page_icon="👍")
 
 st.title("Predicció de Bicing Barcelona")
-st.sidebar.header("Configurar els parametres")
 st.write("Aquesta xarxa prediu quantes bicis hi haurà quan arribis a la teva estació.")
 
 #Carregar el model
@@ -19,17 +18,18 @@ def carregar_model():
 
 model = carregar_model()
 
+#Subtitol
+st.subheader("Selecció d'Estació")
+
 # Graella per als minuts d'antelació
 minuts_futur = st.text_input("Minuts per arribar:")
 
-st.subheader("Selecció d'Estació")
 @st.cache_data
 def carregar_estacions():
     return pd.read_csv('estacions.csv')
 
 df_estacions = carregar_estacions()
 # Combinem l'id real i el nom del carrer
-st.subheader("Selecció d'Estació")
 df_estacions['opcio_visual'] = "Estació " + df_estacions['id'].astype(str) + " - " + df_estacions['streetName']
 
 llista_opcions = sorted(df_estacions['opcio_visual'].unique())
