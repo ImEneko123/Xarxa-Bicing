@@ -81,7 +81,7 @@ input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon, temp_actual, p
 if st.button("Consultar Disponibilitat Real"):
     prediccio = model.predict(input_dades)[0]
     
-    st.metric(label="Bicicletes disponibles estimades", value=f"{round(prediccio, 1)})
+    st.metric(label="Bicicletes disponibles estimades", value=f"{round(prediccio, 1)}")
     
     if prediccio < 1:
         st.error("L'estació probablement no en tindra cap")
