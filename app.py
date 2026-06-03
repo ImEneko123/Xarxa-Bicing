@@ -6,19 +6,31 @@ import requests
 import io
 @st.cache_resource  # Això fa que només es descarregui un cop i l'app vagi súper ràpida
 def carregar_model_des_de_drive():
-    # ⚠️ ENGANXA AQUÍ EL CODI LLARG DEL TEU ENLLAÇ DE DRIVE:
-    file_id = "https://drive.google.com/file/d/1Qot4fVgra8ELkCaPkSOXymfYuXKHF8li/view?usp=sharing" 
+    # ⚠️ TORNA A ENGANXAR AQUÍ EL TEU CODI LLARG DE GOOGLE DRIVE:
+    file_id = "EL_TEU_ID_DE_DRIVE" 
     
-    url = f"https://docs.google.com/uc?export=download&id={file_id}"
+    url_base = "https://docs.google.com/uc?export=download"
     
-    # Descarreguem el fitxer .pkl directament a la memòria de Streamlit Cloud
-    resposta = requests.get(url)
+    # 1. Creem una sessió de descàrrega per poder guardar les cookies de Google
+    session = requests.Session()
+    resposta = session.get(url_base, params={'id': file_id}, stream=True)
+    
+    # 2. Busquem si Google ha enviat el token de "fitxer gran/avís de virus"
+    token = None
+    for key, value in resposta.cookies.items():
+        if key.startswith('download_warning'):
+            token = value
+            break
+            
+    # 3. Si Google ha posat el bloqueig, tornem a demanar el fitxer enviant la confirmació automàtica
+    if token:
+        resposta = session.get(url_base, params={'id': file_id, 'confirm': token}, stream=True)
+        
+    # 4. Ara que ja tenim les dades reals del model de 36 MB, les passem a pickle
     fitxer_memoria = io.BytesIO(resposta.content)
-    
-    # El carreguem amb pickle tal com faries en local
     return pickle.load(fitxer_memoria)
 
-# I ara ja tens el teu model de 36 MB llest per usar:
+# Carreguem el model amb la nova funció
 model_bicing_bosc = carregar_model_des_de_drive()
 
 # Graella per als minuts d'antelació
