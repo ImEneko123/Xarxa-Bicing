@@ -122,15 +122,15 @@ status_actual = obtenir_estat_estacio(id_seleccionat)
 # Nota: L'ordre ha de ser EXACTAMENT el mateix que vas usar al X_train de Kaggle
 # Suposem l'ordre: hora_decimal, dia_setmana, lat, lon
 # Forcem el DataFrame a tenir l'ordre exacte de Kaggle abans de predir
+input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon, temp_actual, pluja_actual, status_actual]], 
+                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa', 'status_num'])
 ordre_correcte = ['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa', 'status_num']
 input_dades = input_dades[ordre_correcte]
 
 # Ara sí, fem la predicció de forma segura
 prediccio = model.predict(input_dades)[0]
-input_dades = pd.DataFrame([[hora_decimal, dia_setmana, lat, lon, temp_actual, pluja_actual, status_actual]], 
-                           columns=['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'temperature_2m', 'pluja_activa', 'status_num'])
 
-if st.button("Consultar Disponibilitat Real"):
+if st.button("Consultar Disponibilita"):
     prediccio = model.predict(input_dades)[0]
     
     st.metric(label="Bicicletes disponibles estimades", value=f"{round(prediccio, 1)}")
