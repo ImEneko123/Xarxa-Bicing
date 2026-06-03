@@ -5,7 +5,7 @@ import datetime
 import requests
 import io
 
-st.title("Prediccio Disponibilitat Bicing")
+st.title("Predicció Disponibilitat Bicing")
 
 @st.cache_resource
 def carregar_model_des_de_dropbox():
