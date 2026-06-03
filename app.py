@@ -50,17 +50,21 @@ fila_estacio = df_estacions[df_estacions['opcio_visual'] == estacio_seleccionada
 lat = fila_estacio['latitude']
 lon = fila_estacio['longitude']
 
-#Temps Actual
-ara = pd.Timestamp.now(tz='Europe/Madrid')
-# Comprovem si la capsa està buida. Si ho està, posem un 0 per defecte
-if not minuts_futur:
-    minuts_futur = 0
+# 1. Recuperem els minuts que ha posat l'usuari a la web
+minuts = st.number_input("Minuts per arribar:", ...)
 
-# Ara ja podem fer la suma tranquil·lament perquè segur que hi ha un número
-moment_futur = ara + datetime.timedelta(minutes=int(minuts_futur))
-# Convertim a les variables que l'arbre entén
-hora_decimal = moment_futur.hour + (moment_futur.minute / 60.0)
-dia_setmana = moment_futur.weekday() # 0=Dilluns
+# 2. Calculem el moment FUtUR (això segur que ja ho fas per al text blau)
+ara = datetime.now()
+temps_futur = ara + timedelta(minutes=minuts)
+
+# 3. ⚠️ AQUÍ ESTÀ LA CLAU: Actualitzem les variables amb el temps FUTUR abans d'entrar a la IA
+hora_decimal = temps_futur.hour + (temps_futur.minute / 60.0)
+dia_setmana = temps_futur.weekday() Dilluns=0 # (Assegura't que el format 0-6 coincideixi amb Kaggle)
+
+# 4. Busquem l'estat i creem el DataFrame amb les variables JA ACTUALITZADES
+status_num = obtenir_estat_estacio(id_seleccionat)
+
+
 
 st.info(f"Predicció per a: **{moment_futur.strftime('%H:%M')}** ({moment_futur.strftime('%A')})")
 
