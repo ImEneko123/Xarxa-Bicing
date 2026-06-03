@@ -50,19 +50,22 @@ fila_estacio = df_estacions[df_estacions['opcio_visual'] == estacio_seleccionada
 lat = fila_estacio['latitude']
 lon = fila_estacio['longitude']
 
-# 1. Recuperem els minuts que ha posat l'usuari a la web
-minuts = st.number_input("Minuts per arribar:", ...)
+# Comprovem si la capsa està buida. Si ho està, posem un 0 per defecte
+if not minuts_futur:
+    minuts_futur = 0
 
-# 2. Calculem el moment FUtUR (això segur que ja ho fas per al text blau)
-ara = datetime.now()
-temps_futur = ara + timedelta(minutes=minuts)
+# 1. Calculem l'hora ACTUAL a Barcelona (el teu codi original era perfecte)
+ara = pd.Timestamp.now(tz='Europe/Madrid')
 
-# 3. ⚠️ AQUÍ ESTÀ LA CLAU: Actualitzem les variables amb el temps FUTUR abans d'entrar a la IA
-hora_decimal = temps_futur.hour + (temps_futur.minute / 60.0)
-dia_setmana = temps_futur.weekday() Dilluns=0 # (Assegura't que el format 0-6 coincideixi amb Kaggle)
+# 2. Calculem el moment FUTUR sumant-hi els minuts
+moment_futur = ara + pd.Timedelta(minutes=int(minuts_futur))
 
-# 4. Busquem l'estat i creem el DataFrame amb les variables JA ACTUALITZADES
-status_num = obtenir_estat_estacio(id_seleccionat)
+# 3. ⚠️ AQUÍ ESTÀ LA CLAU: Actualitzem les variables per a la IA amb el temps FUTUR
+hora_decimal = moment_futur.hour + (moment_futur.minute / 60.0)
+dia_setmana = moment_futur.weekday() # 0=Dilluns
+
+# A partir d'aquí, ja pots deixar l'st.info que tenies a la línia 69:
+# st.info(f"Predicció per a: **{moment_futur.strftime('%H:%M')}**...")
 
 
 
