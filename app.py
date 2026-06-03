@@ -146,10 +146,10 @@ ordre_correcte = ['hora_decimal', 'dia_setmana', 'latitude', 'longitude', 'tempe
 input_dades = input_dades[ordre_correcte]
 
 # Ara sí, fem la predicció de forma segura
-prediccio = model.predict(input_dades)[0]
+prediccio = model_bicing_bosc.predict(input_dades)[0]
 
 if st.button("Consultar Disponibilita"):
-    prediccio = model.predict(input_dades)[0]
+    prediccio = model_bicing_bosc.predict(input_dades)[0]
     
     st.metric(label="Bicicletes disponibles estimades", value=f"{round(prediccio, 1)}")
     
