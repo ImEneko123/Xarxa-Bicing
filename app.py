@@ -83,6 +83,15 @@ def obtenir_clima_futur(lat, lon, hora_seleccionada):
     # Si volem el temps d'una hora concreta d'avui (ex: les 23h), busquem el seu índex:
     index_hora = int(hora_seleccionada)
     
+    resposta = requests.get(url).json()
+    
+    # CONTROL DE SEGURETAT: Si l'API falla o es queixa, ho veurem a la web sense que es trenqui res
+    if 'hourly' not in resposta:
+        st.warning(f"⚠️ Alerta Open-Meteo: {resposta}")
+        return 18.0, 0  # Retornem el valor per defecte temporalment
+        
+    # Si tot està bé, continuem normal:
+    index_hora = int(hora_seleccionada)
     temp_actual = resposta['hourly']['temperature_2m'][index_hora]
     pluja_raw = resposta['hourly']['precipitation'][index_hora]
     
@@ -90,7 +99,6 @@ def obtenir_clima_futur(lat, lon, hora_seleccionada):
     pluja_activa = 1 if pluja_raw > 0 else 0
     
     return temp_actual, pluja_activa
-
 # Cridem a la nova funció passant-li la latitud, longitud i l'hora de l'slider
 temp_actual, pluja_actual = obtenir_clima_futur(lat, lon, hora_decimal)
 
