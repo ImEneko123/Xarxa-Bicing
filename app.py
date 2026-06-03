@@ -3,6 +3,7 @@ import pickle
 import pandas as pd
 import datetime
 import requests
+import io
 @st.cache_resource  # Això fa que només es descarregui un cop i l'app vagi súper ràpida
 def carregar_model_des_de_drive():
     # ⚠️ ENGANXA AQUÍ EL CODI LLARG DEL TEU ENLLAÇ DE DRIVE:
