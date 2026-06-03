@@ -148,7 +148,7 @@ input_dades = input_dades[ordre_correcte]
 # Ara sí, fem la predicció de forma segura
 prediccio = model_bicing_bosc.predict(input_dades)[0]
 
-if st.button("Consultar Disponibilita"):
+if st.button("Consultar Bicis Disponibles"):
     prediccio = model_bicing_bosc.predict(input_dades)[0]
     
     st.metric(label="Bicicletes disponibles estimades", value=f"{round(prediccio, 1)}")
