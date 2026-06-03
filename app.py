@@ -137,3 +137,8 @@ if st.button("Consultar Disponibilitat Real"):
         st.success("Hi haurà bicis suficients")
     else:
         st.success("Hi haurà moltes bicis")
+# Això ens ensenyarà la taula a la web per "espiar" què rep la IA
+st.write(input_dades)
+
+# El teu codi de predicció de sota:
+prediccio = model.predict(input_dades)[0]
