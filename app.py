@@ -165,4 +165,4 @@ if st.button("Consultar Disponibilita"):
 st.write(input_dades)
 
 # El teu codi de predicció de sota:
-prediccio = model.predict(input_dades)[0]
+prediccio = model_bicing_bosc.predict(input_dades)[0]
