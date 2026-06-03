@@ -3,20 +3,22 @@ import pickle
 import pandas as pd
 import datetime
 import requests
+@st.cache_resource  # Això fa que només es descarregui un cop i l'app vagi súper ràpida
+def carregar_model_des_de_drive():
+    # ⚠️ ENGANXA AQUÍ EL CODI LLARG DEL TEU ENLLAÇ DE DRIVE:
+    file_id = "https://drive.google.com/file/d/1Qot4fVgra8ELkCaPkSOXymfYuXKHF8li/view?usp=sharing" 
+    
+    url = f"https://docs.google.com/uc?export=download&id={file_id}"
+    
+    # Descarreguem el fitxer .pkl directament a la memòria de Streamlit Cloud
+    resposta = requests.get(url)
+    fitxer_memoria = io.BytesIO(resposta.content)
+    
+    # El carreguem amb pickle tal com faries en local
+    return pickle.load(fitxer_memoria)
 
-#Text a la pagina + Titol
-st.set_page_config(page_title="Bicing Predictor BCN", page_icon="👍")
-
-st.title("Predicció de Bicing Barcelona")
-st.write("Aquesta xarxa prediu quantes bicis hi haurà quan arribis a la teva estació.")
-
-#Carregar el model
-@st.cache_resource
-def carregar_model():
-    with open('model_bicing_bosc.pkl', 'rb') as f:
-        return pickle.load(f)
-
-model = carregar_model()
+# I ara ja tens el teu model de 36 MB llest per usar:
+model_bicing_bosc = carregar_model_des_de_drive()
 
 # Graella per als minuts d'antelació
 minuts_futur = st.text_input("Minuts per arribar:")
