@@ -4,6 +4,9 @@ import pandas as pd
 import datetime
 import requests
 import io
+
+st.title("Prediccio Disponibilitat Bicing")
+
 @st.cache_resource
 def carregar_model_des_de_dropbox():
     url = "https://www.dropbox.com/scl/fi/7q27qgr70j41byczov5q2/model_bicing_bosc.pkl?rlkey=tm9sr1sgbv5uin3uha0br4h3r&st=u489vb8v&dl=1"
