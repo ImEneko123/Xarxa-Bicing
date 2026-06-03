@@ -91,6 +91,12 @@ def obtenir_clima_futur(lat, lon, hora_seleccionada):
     
     return temp_actual, pluja_activa
 
+# Cridem a la nova funció passant-li la latitud, longitud i l'hora de l'slider
+temp_actual, pluja_actual = obtenir_clima_futur(lat, lon, hora_decimal)
+
+# (Opcional) Mostrem a la web el clima detectat per a aquella hora
+st.write(f"**Clima previst per a aquesta hora:** {temp_actual}°C i {'amb pluja' if pluja_actual == 1 else 'sense pluja'}")
+
 #Saber si esta tancada o oberta
 def obtenir_estat_estacio(id_estacio):
     url = "https://api.bsmsa.eu/ext/api/bsm/gbfs/v2/en/station_status"
