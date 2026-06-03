@@ -75,7 +75,7 @@ import requests
 
 def obtenir_clima_futur(lat, lon, hora_seleccionada):
     # 🔑 Posa aquí la clau que has copiat de WeatherAPI
-    api_key = "EL_TEU_API_KEY" 
+    api_key = "c9dc5c80c2fb4a5195b153641260306" 
     
     # URL de previsió per a les coordenades triades
     url = f"http://api.weatherapi.com/v1/forecast.json?key={api_key}&q={lat},{lon}&days=1&aqi=no&alerts=no"
