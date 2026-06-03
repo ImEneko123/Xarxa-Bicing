@@ -74,22 +74,30 @@ st.info(f"Predicció per a: **{moment_futur.strftime('%H:%M')}** ({moment_futur.
 import requests
 
 def obtenir_clima_futur(lat, lon, hora_seleccionada):
-    # Demanem la previsió horària (hourly), no el temps actual
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m,precipitation"
+    # 🔑 Posa aquí la clau que has copiat de WeatherAPI
+    api_key = "EL_TEU_API_KEY" 
     
-    resposta = requests.get(url).json()
+    # URL de previsió per a les coordenades triades
+    url = f"http://api.weatherapi.com/v1/forecast.json?key={api_key}&q={lat},{lon}&days=1&aqi=no&alerts=no"
     
-    # Open-Meteo ens torna una llista amb les pròximes hores.
-    # Si volem el temps d'una hora concreta d'avui (ex: les 23h), busquem el seu índex:
-    index_hora = int(hora_seleccionada)
-    
-    resposta = requests.get(url).json()
-    
-    # CONTROL DE SEGURETAT: Si l'API falla o es queixa, ho veurem a la web sense que es trenqui res
-    if 'hourly' not in resposta:
-        st.warning(f"⚠️ Alerta Open-Meteo: {resposta}")
-        return 18.0, 0  # Retornem el valor per defecte temporalment
+    try:
+        resposta = requests.get(url).json()
         
+        # L'API ens torna una llista de 24 hores per a avui. Busquem la posició de l'hora triada:
+        index_hora = int(hora_seleccionada)
+        dades_hora = resposta['forecast']['forecastday'][0]['hour'][index_hora]
+        
+        # Extraiem la temperatura real d'aquella hora
+        temp_actual = dades_hora['temp_c']
+        
+        # WeatherAPI ja ens diu directament si plourà en aquella hora (1 = Sí, 0 = No)
+        pluja_activa = dades_hora['will_it_rain']
+        
+        return temp_actual, pluja_activa
+
+    except Exception as e:
+        st.error(f"Error en connectar amb WeatherAPI: {e}")
+        return 18.0, 0  # Pla B d'emergència si falla internet
     # Si tot està bé, continuem normal:
     index_hora = int(hora_seleccionada)
     temp_actual = resposta['hourly']['temperature_2m'][index_hora]
