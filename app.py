@@ -71,27 +71,25 @@ dia_setmana = moment_futur.weekday() # 0=Dilluns
 
 st.info(f"Predicció per a: **{moment_futur.strftime('%H:%M')}** ({moment_futur.strftime('%A')})")
 
-def obtenir_clima(latitud, longitud):
-    # Demanem a l'API la temperatura i la pluja actuals
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={latitud}&longitude={longitud}&current=temperature_2m,rain"
+import requests
+
+def obtenir_clima_futur(lat, lon, hora_seleccionada):
+    # Demanem la previsió horària (hourly), no el temps actual
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&hourly=temperature_2m,precipitation"
     
-    try:
-        resposta = requests.get(url)
-        dades_clima = resposta.json()
-        
-        temp = dades_clima['current']['temperature_2m']
-        pluja_mm = dades_clima['current']['rain']
-        
-        # Si cauen més de 0mm, considerem que plou (1), si no (0)
-        pluja_activa = 1 if pluja_mm > 0 else 0
-        
-        return temp, pluja_activa
-    except:
-        # Pla B: Si l'API cau o no hi ha internet, posem un valor estàndard per no trencar la web
-        return 18.0, 0
-temp_actual, pluja_actual = obtenir_clima(lat, lon)
-estat_pluja = "Plovent" if pluja_actual == 1 else "Sense pluja"
-st.write(f"**Clima actual a la zona:** {temp_actual}°C i {estat_pluja}")
+    resposta = requests.get(url).json()
+    
+    # Open-Meteo ens torna una llista amb les pròximes hores.
+    # Si volem el temps d'una hora concreta d'avui (ex: les 23h), busquem el seu índex:
+    index_hora = int(hora_seleccionada)
+    
+    temp_actual = resposta['hourly']['temperature_2m'][index_hora]
+    pluja_raw = resposta['hourly']['precipitation'][index_hora]
+    
+    # Convertim la pluja a binari (0 o 1) per al teu model
+    pluja_activa = 1 if pluja_raw > 0 else 0
+    
+    return temp_actual, pluja_activa
 
 #Saber si esta tancada o oberta
 def obtenir_estat_estacio(id_estacio):
